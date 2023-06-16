@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public float xmax = 10.5f;
     public float ymin = -2.65f;
     public float ymax = 3.35f;
-    private Rigidbody2D rb; 
+    public Rigidbody2D rb; 
     private SpriteRenderer spriteRenderer;
 
     // Start is called before the first frame update
