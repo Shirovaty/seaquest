@@ -6,41 +6,40 @@ public class FishMovement : MonoBehaviour
     private float movementSpeed;
     private float despawnXPosition;
     private bool flipSprite;
+    private FishSpawner fishSpawner;
     private Rigidbody2D rb; 
     private SpriteRenderer spriteRenderer;
 
     public void SetMovement(Vector3 direction, float speed, float despawnX, bool flip)
     {
-        movementDirection = direction.normalized;
+        movementDirection = direction;
         movementSpeed = speed;
         despawnXPosition = despawnX;
         flipSprite = flip;
-
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
-        if(flipSprite){
-            spriteRenderer.flipX = true;
-        }
+    private void Start()
+    {
+        fishSpawner = FindObjectOfType<FishSpawner>(); // Find the FishSpawner in the scene
     }
 
     void Update()
     {
-        // Move the fish in the set direction and speed
         transform.Translate(movementDirection * movementSpeed * Time.deltaTime);
 
-        // Check if the fish has reached the despawn position
-        if(flipSprite){
-            if (transform.position.x > despawnXPosition)
-            {
-                Destroy(gameObject);
-            }
-        }else{
-            if (transform.position.x < despawnXPosition)
-            {
-                Destroy(gameObject);
-            }
+        if(flipSprite)
+        {
+            spriteRenderer.flipX = true;
         }
-        
+
+        // Check if the fish has moved past the despawn X position
+        if ((movementDirection.x < 0 && transform.position.x < despawnXPosition) ||
+            (movementDirection.x > 0 && transform.position.x > despawnXPosition))
+        {
+            fishSpawner.DecreaseActiveFishCount(); // Decrease the active fish count in the FishSpawner
+            Destroy(gameObject); // Destroy the fish object
+        }
     }
 }
